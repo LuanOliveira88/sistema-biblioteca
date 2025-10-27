@@ -1,0 +1,53 @@
+@startuml er_diagram
+entity "Livro" as Livro {
+  *id : int
+  titulo : string
+  autor : string
+  isbn : string
+  ano_publicacao : int
+}
+
+entity "Exemplar" as Exemplar {
+  *id : int
+  status : StatusLivro
+  livro_id : int
+}
+
+entity "Usuario" as Usuario {
+  *id : int
+  nome : string
+  email : string
+}
+
+entity "Emprestimo" as Emprestimo {
+  *id : int
+  data_inicio : date
+  data_devolucao : date
+  status : StatusEmprestimo
+  usuario_id : int
+}
+
+entity "EmprestimoExemplar" as EmprestimoExemplar {
+  emprestimo_id : int
+  exemplar_id : int
+}
+
+' Enums
+enum StatusExemplar {
+  DISPONIVEL
+  EMPRESTADO
+  ATRASADO
+}
+
+enum StatusEmprestimo {
+  PENDENTE
+  DEVOLVIDO
+  ATRASADO
+}
+
+' Relacionamentos
+Livro ||--o{ Exemplar : possui
+Usuario ||--o{ Emprestimo : realiza
+Emprestimo ||--o{ EmprestimoExemplar : inclui
+Exemplar ||--o{ EmprestimoExemplar : vinculado
+@enduml
