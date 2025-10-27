@@ -82,8 +82,8 @@ class Emprestimo(Base):
     status: Mapped[StatusEmprestimo] = mapped_column(
         SQLEnum(StatusEmprestimo), default=StatusEmprestimo.PENDENTE, init=False
     )
-    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"))
-    usuario: Mapped[Usuario] = relationship("Usuario", backref="emprestimo", init=False)
+    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), init=False)
+    usuario: Mapped[Usuario] = relationship("Usuario", backref="emprestimo")
 
     exemplares: Mapped[list[Exemplar]] = relationship(
         "Exemplar", secondary="emprestimo_exemplares", backref="emprestimos", init=False
