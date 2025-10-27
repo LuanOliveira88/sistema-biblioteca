@@ -1,0 +1,35 @@
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["src"]
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.ruff.lint]
+preview = true
+
+[tool.ruff.format]
+preview = true
+
+[tool.pytest.ini_options]
+pythonpath = "."
+
+[tool.taskipy.tasks]
+lint = 'ruff check'
+pre_format = 'ruff check --fix'
+format = 'ruff format'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=fast_zero -vv'
