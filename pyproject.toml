@@ -20,9 +20,13 @@ include_trailing_comma = true
 
 [tool.ruff.lint]
 preview = true
+select = ['I', 'F', 'E', 'W', 'PT']
 
 [tool.ruff.format]
 preview = true
+quote-style = 'single'
+indent-style = "space"  # só pra garantir compatibilidade
+line-ending = "lf"
 
 [tool.pytest.ini_options]
 pythonpath = "."
@@ -32,4 +36,4 @@ lint = 'ruff check'
 pre_format = 'ruff check --fix'
 format = 'ruff format'
 pre_test = 'task lint'
-test = 'pytest -s -x --cov=src -vv'
+test = 'pytest -s -x --cov=src --cov-report=term-missing --cov-report=html -vv'
