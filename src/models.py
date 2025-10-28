@@ -19,13 +19,13 @@ class Base(DeclarativeBase, MappedAsDataclass):
 
 
 class StatusExemplar(Enum):
-    DISPONIVEL = "disponivel"
-    EMPRESTADO = "emprestado"
-    ATRASADO = "atrasado"
+    DISPONIVEL = 'disponivel'
+    EMPRESTADO = 'emprestado'
+    ATRASADO = 'atrasado'
 
 
 class Livro(Base):
-    __tablename__ = "livros"
+    __tablename__ = 'livros'
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     titulo: Mapped[str]
@@ -35,31 +35,31 @@ class Livro(Base):
 
     def to_dict(self):
         return {
-            "titulo": self.titulo,
-            "autor": self.autor,
-            "isbn": self.isbn,
-            "ano_publicacao": self.ano_publicacao,
+            'titulo': self.titulo,
+            'autor': self.autor,
+            'isbn': self.isbn,
+            'ano_publicacao': self.ano_publicacao,
         }
 
 
 class Exemplar(Base):
-    __tablename__ = "exemplares"
+    __tablename__ = 'exemplares'
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    livro_id: Mapped[int] = mapped_column(ForeignKey("livros.id"))
-    livro: Mapped[Livro] = relationship("Livro", backref="exemplares", init=False)
+    livro_id: Mapped[int] = mapped_column(ForeignKey('livros.id'))
+    livro: Mapped[Livro] = relationship('Livro', backref='exemplares', init=False)
     status: Mapped[StatusExemplar] = mapped_column(
         SQLEnum(StatusExemplar), default=StatusExemplar.DISPONIVEL
     )
 
 
 class TipoUsuario(Enum):
-    ESTUDANTE = "estudante"
-    PROFESSOR = "professor"
+    ESTUDANTE = 'estudante'
+    PROFESSOR = 'professor'
 
 
 class Usuario(Base):
-    __tablename__ = "usuarios"
+    __tablename__ = 'usuarios'
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     nome: Mapped[str]
@@ -68,13 +68,13 @@ class Usuario(Base):
 
 
 class StatusEmprestimo(Enum):
-    PENDENTE = "pendente"
-    DEVOLVIDO = "devolvido"
-    ATRASADO = "atrasado"
+    PENDENTE = 'pendente'
+    DEVOLVIDO = 'devolvido'
+    ATRASADO = 'atrasado'
 
 
 class Emprestimo(Base):
-    __tablename__ = "emprestimos"
+    __tablename__ = 'emprestimos'
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     data_inicio: Mapped[date]
@@ -82,40 +82,40 @@ class Emprestimo(Base):
     status: Mapped[StatusEmprestimo] = mapped_column(
         SQLEnum(StatusEmprestimo), default=StatusEmprestimo.PENDENTE, init=False
     )
-    usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"), init=False)
-    usuario: Mapped[Usuario] = relationship("Usuario", backref="emprestimo")
+    usuario_id: Mapped[int] = mapped_column(ForeignKey('usuarios.id'), init=False)
+    usuario: Mapped[Usuario] = relationship('Usuario', backref='emprestimo')
 
     exemplares: Mapped[list[Exemplar]] = relationship(
-        "Exemplar", secondary="emprestimo_exemplares", backref="emprestimos", init=False
+        'Exemplar', secondary='emprestimo_exemplares', backref='emprestimos', init=False
     )
 
     def __post_init__(self):
         if self.data_inicio == self.data_devolucao:
             raise ValueError(
-                "A data de empréstimo deve ser diferente da data de devolução."
+                'A data de empréstimo deve ser diferente da data de devolução.'
             )
 
         if self.data_devolucao < self.data_inicio:
             raise ValueError(
-                "A data de empréstimo deve ser anterior a data de devolução."
+                'A data de empréstimo deve ser anterior a data de devolução.'
             )
 
         if self.usuario.tipo == TipoUsuario.ESTUDANTE and len(self.exemplares) > 3:
             raise ValueError(
-                "Estudantes só podem pegar no máximo 3 livros emprestados "
-                "simultaneamente."
+                'Estudantes só podem pegar no máximo 3 livros emprestados '
+                'simultaneamente.'
             )
 
         if self.usuario.tipo == TipoUsuario.PROFESSOR and len(self.exemplares) > 5:
             raise ValueError(
-                "Professores só podem pegar no máximo 5 livros emprestados "
-                "simultaneamente."
+                'Professores só podem pegar no máximo 5 livros emprestados '
+                'simultaneamente.'
             )
 
 
 class EmprestimoExemplar(Base):
-    __tablename__ = "emprestimo_exemplares"
+    __tablename__ = 'emprestimo_exemplares'
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    emprestimo_id: Mapped[int] = mapped_column(ForeignKey("emprestimos.id"))
-    exemplar_id: Mapped[int] = mapped_column(ForeignKey("exemplares.id"))
+    emprestimo_id: Mapped[int] = mapped_column(ForeignKey('emprestimos.id'))
+    exemplar_id: Mapped[int] = mapped_column(ForeignKey('exemplares.id'))
