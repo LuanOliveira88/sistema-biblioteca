@@ -58,10 +58,13 @@ sistema-biblioteca/
 │   ├── services.py       # Serviços de que gerenciam as entidades e o banco de dados
 │   ├── main.py           # Ponto de entrada da aplicação
 │   ├── utils.py          # Utilitários
+│   ├── dtos.py           # classes para transferência de dados
+│   ├── errors.py         # erros característicos
 │
 ├── tests/
 │   ├── conftest.py       # Implementação de fixtures
-│   ├── test_models.py    # Testes unitários das classes
+│   ├── test_models.py    # Testes unitários das classes/entidades do ORM
+│   ├── test_services.py  # Testes unitários das classes de serviços
 │
 ├── requirements.txt      # Dependências do sistema
 └── README.md             # Documentação
