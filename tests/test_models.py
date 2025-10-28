@@ -14,9 +14,9 @@ class TestModels:
     def test_livro_criacao(self, session):
         """Testa a criação de um objeto Livro e sua persistência no banco."""
         livro = Livro(
-            titulo="Dom Casmurro",
-            autor="Machado de Assis",
-            isbn="12345",
+            titulo='Dom Casmurro',
+            autor='Machado de Assis',
+            isbn='12345',
             ano_publicacao=1899,
         )
         session.add(livro)
@@ -26,9 +26,9 @@ class TestModels:
     def test_exemplar_criacao(self, session):
         """Testa a criação de um objeto Exemplar vinculado a um Livro."""
         livro = Livro(
-            titulo="Dom Casmurro",
-            autor="Machado de Assis",
-            isbn="12345",
+            titulo='Dom Casmurro',
+            autor='Machado de Assis',
+            isbn='12345',
             ano_publicacao=1899,
         )
         session.add(livro)
@@ -44,9 +44,9 @@ class TestModels:
 
         with session.no_autoflush:
             livro = Livro(
-                titulo="Dom Casmurro",
-                autor="Machado de Assis",
-                isbn="12345",
+                titulo='Dom Casmurro',
+                autor='Machado de Assis',
+                isbn='12345',
                 ano_publicacao=1899,
             )
             session.add(livro)
@@ -55,7 +55,7 @@ class TestModels:
             session.add(exemplar)
             session.commit()
             usuario = Usuario(
-                nome="José", email="jose@email.com", tipo=TipoUsuario.ESTUDANTE
+                nome='José', email='jose@email.com', tipo=TipoUsuario.ESTUDANTE
             )
             session.add(usuario)
             session.commit()
@@ -68,3 +68,24 @@ class TestModels:
             session.add(emprestimo)
             session.commit()
             assert exemplar in emprestimo.exemplares
+
+    def test_livro_to_dict(self):
+        livro = Livro(
+            titulo='Dom Casmurro',
+            autor='Machado de Assis',
+            isbn='12345',
+            ano_publicacao=1899,
+        )
+
+        livro_dict = livro.to_dict()
+
+        assert isinstance(livro_dict, dict)
+
+        chaves_esperadas = {'titulo', 'autor', 'ano_publicacao', 'isbn'}
+
+        assert set(livro_dict.keys()) == chaves_esperadas
+
+        assert livro_dict['titulo'] == 'Dom Casmurro'
+        assert livro_dict['autor'] == 'Machado de Assis'
+        assert livro_dict['isbn'] == '12345'
+        assert livro_dict['ano_publicacao'] == 1899
